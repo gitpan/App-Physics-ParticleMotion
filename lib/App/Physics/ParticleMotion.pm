@@ -4,7 +4,7 @@ use 5.006001;
 use strict;
 use warnings;
 
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 use Carp qw/croak carp/;
 use Math::Symbolic qw/:all/;
@@ -116,7 +116,7 @@ sub run {
 	my @functions;
 	foreach my $p (@particles) {
 		foreach ( 0 .. $dimensions - 1 ) {
-		    my $str = $p->{"func$coords[$_]"};
+		    my $str = $p->{"func".$coords[$_]};
 			my $temp;
 			eval { $temp = Math::Symbolic->parse_from_string($str) };
 			if ($@ or not defined $temp) {
@@ -125,6 +125,7 @@ sub run {
 				croak "Could not parse function '$str' for particle\n$part";
 			}
 			push @functions, $temp;
+		}
 	}
 
 	# Get starting values for the particles
@@ -248,7 +249,6 @@ sub run {
 	
 	# Run the TK MainLoop
 	MainLoop;
-
 }
 
 
@@ -400,7 +400,6 @@ sub _draw_axis {
               -coords => [ _transform( $app, $x1, $y1, $x2, $y2 ) ],
               -fill   => $axiscolor,
         	);
-        }
     }
 }
 
